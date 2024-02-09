@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 // @ts-ingore
