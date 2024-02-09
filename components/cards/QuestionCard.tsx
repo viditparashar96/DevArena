@@ -33,9 +33,9 @@ const QuestionCard = ({ question }: QuestionCardProps) => {
       </div>
       <div className="flex-between mt-6 w-full flex-wrap gap-3">
         <Metric
-          imgUrl={like}
+          imgUrl={question?.author?.picture}
           alt="user"
-          value={"John Doe"}
+          value={question?.author?.username || "Anonymous"}
           title={`- asked ${getTimeStamp(question.createdAt)}`}
           href={`/profile/${123}`}
           isAuthor
