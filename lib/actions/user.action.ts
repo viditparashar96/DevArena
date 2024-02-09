@@ -55,9 +55,12 @@ export async function deleteUser(params: any) {
     // and questions,and answers,comments,etc
 
     // get user questions and delete them
+
+    // @ts-ignore
     const userQuestionsIds = await Question.find({ author: user._id }).distinct(
       "_id"
     );
+    console.log(userQuestionsIds);
     await Question.deleteMany({ author: user._id });
 
     // TODO: delete answers,comments,etc
