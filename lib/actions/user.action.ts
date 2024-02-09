@@ -72,3 +72,15 @@ export async function deleteUser(params: any) {
     console.log(error);
   }
 }
+
+export async function getAllUsers(params: any) {
+  try {
+    connectToDatabase();
+    // const { page = 1, pageSize = 10, filter, searchQuery } = params;
+    const users = await User.find({}).sort({ createdAt: -1 });
+
+    return users;
+  } catch (error) {
+    console.log(error);
+  }
+}
