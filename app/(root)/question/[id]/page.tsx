@@ -1,17 +1,26 @@
 import Answer from "@/components/forms/Answer";
+import AllAnswers from "@/components/shared/AllAnswers";
 import Metric from "@/components/shared/Metric";
 import ParseHtml from "@/components/shared/ParseHtml";
 import RenderTag from "@/components/shared/RenderTag";
+import Voting from "@/components/shared/Voting";
 import { getQuestionById } from "@/lib/actions/question.actions";
+import { getUserById } from "@/lib/actions/user.action";
 import { getTimeStamp } from "@/lib/utils";
 import Answers from "@/public/Answers.svg";
 import like from "@/public/like.svg";
 import View from "@/public/view.svg";
+import { auth } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 const Page = async ({ params }: any) => {
   const { id } = params;
   const question = await getQuestionById(id);
+  const { userId: clerkId } = auth();
+  let mongoUser;
+  if (clerkId) {
+    mongoUser = await getUserById({ userId: clerkId });
+  }
   // console.log(question);
   return (
     <>
@@ -32,7 +41,9 @@ const Page = async ({ params }: any) => {
               {question.author.name}
             </p>
           </Link>
-          <div className=" flex justify-end">Vottindfg</div>
+          <div className=" flex justify-end">
+            <Voting />
+          </div>
         </div>
         <h2 className="h2-semibold text-dark200_light900 m-3.5 w-full text-left">
           {question.title}
@@ -49,7 +60,7 @@ const Page = async ({ params }: any) => {
         <Metric
           imgUrl={Answers}
           alt="Answers"
-          value={question.answers}
+          value={question.answers.length}
           title="Answers"
           textStyle="small-medium text-dark400_light800"
         />
@@ -67,7 +78,18 @@ const Page = async ({ params }: any) => {
           <RenderTag key={tag.id} tag={tag} />
         ))}
       </div>
-      <Answer />
+
+      <AllAnswers
+        questionId={JSON.stringify(question._id)}
+        userId={JSON.stringify(mongoUser?._id)}
+        totalAnswers={question.answers.length}
+      />
+
+      <Answer
+        question={question.explanation}
+        questionId={JSON.stringify(question._id)}
+        authorId={JSON.stringify(mongoUser?._id)}
+      />
     </>
   );
 };

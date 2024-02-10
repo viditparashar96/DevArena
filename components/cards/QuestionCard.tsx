@@ -51,7 +51,7 @@ const QuestionCard = ({ question }: QuestionCardProps) => {
         <Metric
           imgUrl={Answers}
           alt="Answers"
-          value={question.answers}
+          value={question.answers.length}
           title="Answers"
           textStyle="small-medium text-dark400_light800"
         />

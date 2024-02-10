@@ -19,6 +19,7 @@ import { useForm } from "react-hook-form";
 import { IoMdClose } from "react-icons/io";
 import { z } from "zod";
 
+import { useTheme } from "@/context/ThemeProvider";
 import { createQuestion } from "@/lib/actions/question.actions";
 import { usePathname, useRouter } from "next/navigation";
 import { Badge } from "../ui/badge";
@@ -30,6 +31,7 @@ interface QuestionProps {
 const type: any = "create";
 
 const Question = ({ mongoUserId }: QuestionProps) => {
+  const { mode } = useTheme();
   const editorRef: any = useRef(null);
   const router = useRouter();
   const pathname = usePathname();
@@ -171,6 +173,8 @@ const Question = ({ mongoUserId }: QuestionProps) => {
                         "alignright alignjustify | bullist numlist  ",
                       content_style:
                         "body { font-family:Inter; font-size:16px }",
+                      skin: mode === "dark" ? "oxide-dark" : "oxide",
+                      content_css: mode === "dark" ? "dark" : "light",
                     }}
                   />
                 </FormControl>
