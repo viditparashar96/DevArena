@@ -55,3 +55,21 @@ export async function createQuestion(params: CreateQuestionParams) {
     console.log(error);
   }
 }
+
+export async function getQuestionById(id: string) {
+  try {
+    connectToDatabase();
+    const question = await Question.findById(id)
+      .populate({ path: "tags", model: Tag, select: "_id name" })
+      .populate({
+        path: "author",
+        model: User,
+        select: "_id clerkId name picture username",
+      })
+      .exec();
+    if (!question) throw new Error("No question found");
+    return question;
+  } catch (error) {
+    console.log(error);
+  }
+}
