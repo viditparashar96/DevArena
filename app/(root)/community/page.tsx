@@ -6,6 +6,7 @@ import { getAllUsers } from "@/lib/actions/user.action";
 import Link from "next/link";
 
 const Page = async () => {
+  // @ts-ignore
   const users: any = await getAllUsers();
   //   console.log(users);
   return (
