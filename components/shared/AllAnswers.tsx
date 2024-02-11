@@ -5,7 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import Filter from "./Filter";
 import ParseHtml from "./ParseHtml";
-import Voting from "./Voting";
 
 interface AllAnswersProps {
   questionId: string;
@@ -58,7 +57,9 @@ const AllAnswers = async ({
                   </div>
                 </Link>
                 <div className="flex justify-end">
-                  <Voting />
+                  {/* <Voting
+                  
+                  /> */}
                 </div>
               </div>
             </div>
