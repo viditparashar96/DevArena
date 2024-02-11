@@ -44,7 +44,7 @@ const QuestionCard = ({ question }: QuestionCardProps) => {
         <Metric
           imgUrl={like}
           alt="like"
-          value={question.upvotes}
+          value={question.upvotes.length}
           title="Votes"
           textStyle="small-medium text-dark400_light800"
         />

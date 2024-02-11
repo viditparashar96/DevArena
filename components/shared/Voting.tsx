@@ -1,5 +1,12 @@
 "use client";
+import { downvoteAnswer, upvoteAnswer } from "@/lib/actions/answer.action";
+import {
+  downvoteQuestion,
+  upvoteQuestion,
+} from "@/lib/actions/question.actions";
+import { toggleSaveQuestion } from "@/lib/actions/user.action";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 interface Props {
   type: string;
@@ -21,8 +28,68 @@ const Voting = ({
   hasdownvoted,
   hasSaved,
 }: Props) => {
-  const handleSave = () => {};
-  const handlevote = (action: string) => {};
+  const pathname = usePathname();
+  const handleSave = async () => {
+    if (!userId) {
+      console.log("no user");
+      return;
+    }
+    console.log("save");
+    // save question
+    await toggleSaveQuestion({
+      userId: JSON.parse(userId),
+      questionId: JSON.parse(itemId),
+      path: pathname,
+    });
+  };
+  const handlevote = async (action: string) => {
+    if (!userId) {
+      return;
+    }
+    if (action === "upvote") {
+      console.log("upvote");
+      if (type === "Question") {
+        await upvoteQuestion({
+          questionId: JSON.parse(itemId),
+          userId: JSON.parse(userId),
+          hasupvoted,
+          hasdownvoted,
+          path: pathname,
+        });
+      } else if (type === "Answer") {
+        await upvoteAnswer({
+          answerId: JSON.parse(itemId),
+          userId: JSON.parse(userId),
+          hasupvoted,
+          hasdownvoted,
+          path: pathname,
+        });
+      }
+      // show toast
+      return;
+    }
+    if (action === "downvote") {
+      console.log("downvote");
+      if (type === "Question") {
+        await downvoteQuestion({
+          questionId: JSON.parse(itemId),
+          userId: JSON.parse(userId),
+          hasupvoted,
+          hasdownvoted,
+          path: pathname,
+        });
+      } else if (type === "Answer") {
+        await downvoteAnswer({
+          answerId: JSON.parse(itemId),
+          userId: JSON.parse(userId),
+          hasupvoted,
+          hasdownvoted,
+          path: pathname,
+        });
+      }
+      // show toast
+    }
+  };
   return (
     <div className="flex gap-5">
       <div className=" flex-center gap-2.5">
@@ -49,24 +116,26 @@ const Voting = ({
             height={18}
             className=" cursor-pointer"
             onClick={() => {
-              handlevote("upvote");
+              handlevote("downvote");
             }}
           />
           <div className=" flex-center background-light700_dark400 min-w-[18px] rounded-sm p-1">
-            <p className=" subtle-medium text-dark400_light900">{upvotes}</p>
+            <p className=" subtle-medium text-dark400_light900">{downvotes}</p>
           </div>
         </div>
       </div>
-      <Image
-        src={hasSaved ? "/hasdownvoted.svg" : "/saved.svg"}
-        alt="saved"
-        width={18}
-        height={18}
-        className=" cursor-pointer"
-        onClick={() => {
-          handleSave();
-        }}
-      />
+      {type === "Question" && (
+        <Image
+          src={hasSaved ? "/hasdownvoted.svg" : "/saved.svg"}
+          alt="saved"
+          width={18}
+          height={18}
+          className=" cursor-pointer"
+          onClick={() => {
+            handleSave();
+          }}
+        />
+      )}
     </div>
   );
 };
