@@ -31,7 +31,7 @@ body {
     @apply max-w-full prose dark:prose-p:text-light-700 dark:pros;
   }
   .primary-gradient {
-    background: linear-gradient(129deg, #ff7000 0%, #e2995f 100%);
+    background: linear-gradient(129deg, #f53f70 0%, #ff7230 100%);
   }
   .dark-gradient {
     background: linear-gradient(
