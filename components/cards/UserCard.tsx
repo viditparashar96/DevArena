@@ -18,7 +18,7 @@ const UserCard = async ({ user }: UserCardProps) => {
   const interactedTags: any = await getTopInteractedTags({ userId: user._id });
   return (
     <Link
-      href={`/prfile/${user.clerkId}`}
+      href={`/profile/${user.clerkId}`}
       className=" shadow-light100_darknone w-full max-xs:min-w-full xs:w-[260px]"
     >
       <article className=" background-light900_dark200 light-border flex-center w-full flex-col rounded-2xl border p-8">

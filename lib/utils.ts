@@ -65,3 +65,13 @@ export const formatNumber = (num: number): string => {
     return rounded.toFixed(1) + "M";
   }
 };
+export default function getJoinedDate(date: Date) {
+  // Get the month and year from the Date object
+  const month = date.toLocaleString("default", { month: "long" });
+  const year = date.getFullYear();
+
+  // Join the month and year
+  const joinedDate = `${month} ${year}`;
+
+  return joinedDate;
+}

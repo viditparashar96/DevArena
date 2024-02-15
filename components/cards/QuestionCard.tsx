@@ -8,8 +8,9 @@ import Metric from "../shared/Metric";
 import RenderTag from "../shared/RenderTag";
 interface QuestionCardProps {
   question: any;
+  clerkId?: string | null;
 }
-const QuestionCard = ({ question }: QuestionCardProps) => {
+const QuestionCard = ({ question, clerkId }: QuestionCardProps) => {
   const time = getTimeStamp(question.createdAt);
   return (
     <div className="card-wrapper rounded-[10px] p-9 sm:px-11 ">

@@ -41,7 +41,7 @@ body {
     );
   }
   .tab {
-    @apply min-h-full dark:bg-dark-400 bg-light-800 text-light-5;
+    @apply min-h-full dark:bg-dark-400 bg-light-800 text-light-500;
   }
   .no-focus {
     @apply focus-visible:ring-0 focus-visible:ring-transparent;
