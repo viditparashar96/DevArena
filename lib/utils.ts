@@ -50,7 +50,7 @@ export const getTimeStamp = (createdAt: any): string => {
     return `${Math.floor(elapsedSeconds / year)} years ago`;
   }
 };
-export const formatNumber = (num: number): string => {
+export const formatNumber = (num: number | undefined): string => {
   if (typeof num !== "number") {
     throw new Error("Input must be a number");
   }
