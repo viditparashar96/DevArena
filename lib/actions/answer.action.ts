@@ -1,6 +1,7 @@
 "use server";
 
 import Answer from "@/database/answer.model";
+import Interaction from "@/database/interaction.model";
 import Question from "@/database/question.model";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoose";
@@ -125,6 +126,31 @@ export async function downvoteAnswer(params: {
     }).exec();
     if (!answer) throw new Error("No answer found");
     // InCrement authors reputation
+    revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function deleteAnswer(params: { answerId: string; path: string }) {
+  try {
+    connectToDatabase();
+    const { answerId, path } = params;
+    const answer = await Answer.findById(answerId).exec();
+    if (!answer) throw new Error("No answer found");
+    await answer.deleteOne({ _id: answerId }).exec();
+    await Question.updateMany(
+      {
+        _id: answer.question,
+      },
+      {
+        $pull: {
+          answers: answerId,
+        },
+      }
+    );
+    await Interaction.deleteMany({ answer: answerId }).exec();
+
     revalidatePath(path);
   } catch (error) {
     console.log(error);

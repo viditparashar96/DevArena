@@ -1,4 +1,6 @@
 "use server";
+import Answer from "@/database/answer.model";
+import Interaction from "@/database/interaction.model";
 import Question from "@/database/question.model";
 import Tag from "@/database/tag.model";
 import User from "@/database/user.model";
@@ -192,6 +194,57 @@ export async function getSavedQuestion(params: any) {
 
     const savedQuestions = user.saved;
     return savedQuestions;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function deleteQuestion(params: {
+  questionId: string;
+  path: string;
+}) {
+  try {
+    connectToDatabase();
+    const { questionId, path } = params;
+    await Question.deleteOne({ _id: questionId }).exec();
+    await Answer.deleteMany({ question: questionId }).exec();
+    await Interaction.deleteMany({ question: questionId }).exec();
+    await Tag.updateMany(
+      {
+        questions: questionId,
+      },
+      {
+        $pull: {
+          questions: questionId,
+        },
+      }
+    );
+    revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function editQuestion(params: {
+  questionId: string;
+  title: string;
+  explanation: string;
+  path: string;
+}) {
+  try {
+    connectToDatabase();
+    const { questionId, title, explanation, path } = params;
+    const question = await Question.findById(questionId)
+      .populate({ path: "tags", model: Tag })
+      .exec();
+    if (!question) {
+      throw new Error("No question found");
+    }
+    question.title = title;
+    question.explanation = explanation;
+    await question.save();
+
+    revalidatePath(path);
   } catch (error) {
     console.log(error);
   }

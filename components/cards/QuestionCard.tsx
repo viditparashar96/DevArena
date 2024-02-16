@@ -3,7 +3,9 @@ import like from "@/public/like.svg";
 import View from "@/public/view.svg";
 
 import { getTimeStamp } from "@/lib/utils";
+import { SignedIn } from "@clerk/nextjs";
 import Link from "next/link";
+import EditDeleteAction from "../EditDeleteAction";
 import Metric from "../shared/Metric";
 import RenderTag from "../shared/RenderTag";
 interface QuestionCardProps {
@@ -12,6 +14,7 @@ interface QuestionCardProps {
 }
 const QuestionCard = ({ question, clerkId }: QuestionCardProps) => {
   const time = getTimeStamp(question.createdAt);
+  const showActionButtons = clerkId && clerkId === question.author.clerkId;
   return (
     <div className="card-wrapper rounded-[10px] p-9 sm:px-11 ">
       <div className="flex flex-col-reverse items-start justify-between gap-5 sm:flex-row">
@@ -26,6 +29,14 @@ const QuestionCard = ({ question, clerkId }: QuestionCardProps) => {
           </Link>
         </div>
         {/* If singned in add edit delete actions */}
+        <SignedIn>
+          {showActionButtons && (
+            <EditDeleteAction
+              type="Question"
+              itemId={JSON.stringify(question._id)}
+            />
+          )}
+        </SignedIn>
       </div>
       <div className="mt-3.5 flex flex-wrap gap-2">
         {question.tags.map((tag: any) => (

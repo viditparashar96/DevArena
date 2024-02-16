@@ -20,28 +20,30 @@ import { IoMdClose } from "react-icons/io";
 import { z } from "zod";
 
 import { useTheme } from "@/context/ThemeProvider";
-import { createQuestion } from "@/lib/actions/question.actions";
+import { createQuestion, editQuestion } from "@/lib/actions/question.actions";
 import { usePathname, useRouter } from "next/navigation";
 import { Badge } from "../ui/badge";
 
 interface QuestionProps {
   mongoUserId: string;
+  type?: string;
+  questionDetails?: string | undefined;
 }
 
-const type: any = "create";
-
-const Question = ({ mongoUserId }: QuestionProps) => {
+const Question = ({ mongoUserId, type, questionDetails }: QuestionProps) => {
   const { mode } = useTheme();
   const editorRef: any = useRef(null);
   const router = useRouter();
   const pathname = usePathname();
+  const parsedQuestion = JSON?.parse(questionDetails || "");
+  const groupedTag = parsedQuestion?.tags.map((tag: any) => tag.name);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const form = useForm<z.infer<typeof QusetionsSchema>>({
     resolver: zodResolver(QusetionsSchema),
     defaultValues: {
-      title: "",
-      explanation: "",
-      tags: [],
+      title: parsedQuestion?.title || "",
+      explanation: parsedQuestion?.explanation || "",
+      tags: groupedTag || [],
     },
   });
 
@@ -50,16 +52,26 @@ const Question = ({ mongoUserId }: QuestionProps) => {
     // Do something with the form values.
     setIsSubmitting(true);
     try {
-      console.log(values);
-      // @ts-ignore
-      await createQuestion({
-        title: values.title,
-        explanation: values.explanation,
-        tags: values.tags,
-        author: JSON.parse(mongoUserId),
-        path: pathname,
-      });
-      router.push("/");
+      if (type === "Edit") {
+        await editQuestion({
+          questionId: parsedQuestion._id,
+          title: values.title,
+          explanation: values.explanation,
+          path: pathname,
+        });
+        router.push(`/question/${parsedQuestion._id}`);
+      } else {
+        console.log(values);
+        // @ts-ignore
+        await createQuestion({
+          title: values.title,
+          explanation: values.explanation,
+          tags: values.tags,
+          author: JSON.parse(mongoUserId),
+          path: pathname,
+        });
+        router.push("/");
+      }
     } catch (error) {
       console.log(error);
     } finally {
@@ -143,7 +155,7 @@ const Question = ({ mongoUserId }: QuestionProps) => {
                     onInit={(evt, editor) => (editorRef.current = editor)}
                     onBlur={field.onBlur}
                     onEditorChange={(content) => field.onChange(content)}
-                    initialValue=""
+                    initialValue={parsedQuestion?.explanation || ""}
                     init={{
                       height: 500,
                       menubar: false,
@@ -198,6 +210,7 @@ const Question = ({ mongoUserId }: QuestionProps) => {
                 <FormControl className="mt-3.5">
                   <>
                     <Input
+                      disabled={type === "Edit"}
                       placeholder="Add tags"
                       className="no-focus paragraph-regular background-light900_dark300 light-border-2 text-dark300_light700 min-h-[56px] border"
                       onKeyDown={(e) => handleInputKeyDown(e, field)}
@@ -208,9 +221,14 @@ const Question = ({ mongoUserId }: QuestionProps) => {
                           <Badge
                             key={tag}
                             className="subtle-medium background-light800_dark300 text-light400_light500 flex cursor-pointer items-center justify-center gap-2 rounded-md border-none px-4 py-2 capitalize"
-                            onClick={() => handleTagRemove(tag, field)}
+                            onClick={
+                              type !== "Edit"
+                                ? () => handleTagRemove(tag, field)
+                                : () => {}
+                            }
                           >
-                            {tag} <IoMdClose />
+                            {tag}
+                            {type !== "Edit" && <IoMdClose />}
                           </Badge>
                         ))}
                       </div>
@@ -231,9 +249,9 @@ const Question = ({ mongoUserId }: QuestionProps) => {
             disabled={isSubmitting}
           >
             {isSubmitting ? (
-              <>{type === "edit" ? "Editing..." : "Posting..."}</>
+              <>{type === "Edit" ? "Editing..." : "Posting..."}</>
             ) : (
-              <>{type === "edit" ? "Edit Question" : "Ask a Question"}</>
+              <>{type === "Edit" ? "Edit Question" : "Ask a Question"}</>
             )}
           </Button>
         </form>

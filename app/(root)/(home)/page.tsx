@@ -6,6 +6,7 @@ import LocalSearchBar from "@/components/shared/search/LocalSearchBar";
 import { Button } from "@/components/ui/button";
 import { HomePageFilters } from "@/constants/filters";
 import { getQuestions } from "@/lib/actions/question.actions";
+import { auth } from "@clerk/nextjs";
 // import { formatNumber } from "@/lib/utils";
 import Link from "next/link";
 
@@ -40,7 +41,7 @@ import Link from "next/link";
 
 export default async function Home() {
   // const { mode } = useTheme();
-
+  const { userId: clerkId } = auth();
   const questions: any = await getQuestions({});
   // console.log(questions);
   return (
@@ -73,7 +74,11 @@ export default async function Home() {
           questions
             .reverse()
             .map((question: any) => (
-              <QuestionCard key={question._id} question={question} />
+              <QuestionCard
+                key={question._id}
+                question={question}
+                clerkId={clerkId}
+              />
             ))
         ) : (
           <NoResult
