@@ -35,7 +35,7 @@ const Question = ({ mongoUserId, type, questionDetails }: QuestionProps) => {
   const editorRef: any = useRef(null);
   const router = useRouter();
   const pathname = usePathname();
-  const parsedQuestion = JSON?.parse(questionDetails || "");
+  const parsedQuestion = questionDetails && JSON?.parse(questionDetails || "");
   const groupedTag = parsedQuestion?.tags.map((tag: any) => tag.name);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const form = useForm<z.infer<typeof QusetionsSchema>>({
