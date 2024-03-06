@@ -7,9 +7,9 @@ const TopProgressBar = ({ children }: { children: React.ReactNode }) => {
     <>
       {children}
       <Next13ProgressBar
-        height="4px"
-        color="#0A2FFF"
-        options={{ showSpinner: true }}
+        height="2px"
+        color="#f53f70"
+        options={{ showSpinner: false }}
         showOnShallow
       />
     </>
