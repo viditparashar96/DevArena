@@ -29,6 +29,8 @@
     "mongodb": "^6.3.0",
     "mongoose": "^8.1.1",
     "next": "14.1.0",
+    "next13-progressbar": "^1.2.1",
+    "nextjs-progressbar": "^0.0.16",
     "prettier": "^3.2.4",
     "prismjs": "^1.29.0",
     "react": "^18",
