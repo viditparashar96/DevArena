@@ -54,7 +54,7 @@ const Answer = ({ question, questionId, authorId }: AnswerProps) => {
         editorRef.current.setContent("");
       }
     } catch (error) {
-      console.log(error);
+      console.log("err===>", error);
     } finally {
       setIsSubmitting(false);
     }
