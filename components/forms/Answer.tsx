@@ -155,7 +155,7 @@ const Answer = ({ question, questionId, authorId }: AnswerProps) => {
             <Button
               type="submit"
               className="primary-gradient w-fit text-white"
-              disabled={isSubmitting}
+              disabled={isSubmitting || isSubmittingAI}
             >
               {isSubmitting ? "Posting..." : "Post Answer"}
             </Button>
