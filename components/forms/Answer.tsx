@@ -10,6 +10,7 @@ import * as z from "zod";
 import { Button } from "../ui/button";
 
 import { createAnswer } from "@/lib/actions/answer.action";
+import { run } from "@/lib/genai";
 import { usePathname } from "next/navigation";
 import {
   Form,
@@ -29,6 +30,7 @@ const Answer = ({ question, questionId, authorId }: AnswerProps) => {
   const { mode } = useTheme();
   const editorRef: any = useRef(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmittingAI, setIsSubmittingAI] = useState(false);
   const form = useForm<z.infer<typeof AnswerSchema>>({
     resolver: zodResolver(AnswerSchema),
     defaultValues: {
@@ -38,6 +40,7 @@ const Answer = ({ question, questionId, authorId }: AnswerProps) => {
 
   const handleCreateAnswer = async (value: any) => {
     setIsSubmitting(true);
+    console.log(value);
     try {
       await createAnswer({
         content: value.answer,
@@ -57,15 +60,35 @@ const Answer = ({ question, questionId, authorId }: AnswerProps) => {
     }
   };
 
+  const handleClick = async () => {
+    try {
+      if (!authorId) return;
+      setIsSubmittingAI(true);
+      const questionToSend = JSON.stringify(question);
+      const response = await run(questionToSend);
+      setIsSubmittingAI(false);
+      if (editorRef.current) {
+        const aiAnswer = response.replace(/(?:\r\n|\r|\n)/g, "<br>");
+
+        editorRef.current.setContent(aiAnswer);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div>
       <div className="mt-4 flex flex-col justify-between gap-5 sm:flex-row sm:items-center sm:gap-2">
         <h4 className="paragraph-semibold text-dark400_light800">
           Write your answer here
         </h4>
-        <Button className="primary-gradient flex w-fit gap-2 text-white">
+        <Button
+          className="primary-gradient flex w-fit gap-2 text-white"
+          onClick={handleClick}
+          disabled={isSubmittingAI}
+        >
           <BsStars height={12} width={12} />
-          Generate AI Answer
+          {isSubmittingAI ? "Generating..." : "Generate AI Answer"}
         </Button>
       </div>
       <Form {...form}>
