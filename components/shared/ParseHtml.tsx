@@ -32,7 +32,7 @@ const ParseHtml = ({ content }: ParseHtmlProps) => {
   useEffect(() => {
     Prism.highlightAll();
   }, []);
-  return <div>{parse(content)}</div>;
+  return <div className=" text-dark400_light800">{parse(content)}</div>;
 };
 
 export default ParseHtml;
