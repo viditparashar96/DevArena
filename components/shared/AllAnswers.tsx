@@ -13,14 +13,21 @@ interface AllAnswersProps {
   totalAnswers: number;
   page?: number;
   filter?: number;
+  searchParams: any;
 }
 
 const AllAnswers = async ({
   questionId,
   userId,
   totalAnswers,
+  page,
+  searchParams,
 }: AllAnswersProps) => {
-  const answers: any = await getAnswers({ questionId });
+  const answers: any = await getAnswers({
+    questionId,
+    page: page ? +page : 1,
+    filter: searchParams.filter,
+  });
   //   console.log(answers);
   return (
     <div className="mt-11">

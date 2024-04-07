@@ -6,6 +6,7 @@ import LocalSearchBar from "@/components/shared/search/LocalSearchBar";
 import { Button } from "@/components/ui/button";
 import { HomePageFilters } from "@/constants/filters";
 import { getQuestions } from "@/lib/actions/question.actions";
+import { SearchParamsProps } from "@/types";
 import { auth } from "@clerk/nextjs";
 // import { formatNumber } from "@/lib/utils";
 import Link from "next/link";
@@ -39,11 +40,14 @@ import Link from "next/link";
 //   },
 // ];
 
-export default async function Home() {
+export default async function Home({ searchParams }: SearchParamsProps) {
   // const { mode } = useTheme();
   const { userId: clerkId } = auth();
-  const questions: any = await getQuestions({});
-  // console.log(questions);
+  const questions: any = await getQuestions({
+    searchQuery: searchParams.q,
+    filter: searchParams.filter,
+  });
+  //  Fecth recommended questions
   return (
     <>
       <div className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row">

@@ -4,6 +4,7 @@ import NoResult from "@/components/shared/NoResult";
 import LocalSearchBar from "@/components/shared/search/LocalSearchBar";
 import { QuestionFilters } from "@/constants/filters";
 import { getSavedQuestion } from "@/lib/actions/question.actions";
+import { SearchParamsProps } from "@/types";
 import { auth } from "@clerk/nextjs";
 // import { formatNumber } from "@/lib/utils";
 
@@ -36,12 +37,14 @@ import { auth } from "@clerk/nextjs";
 //   },
 // ];
 
-export default async function Collection() {
+export default async function Collection({ searchParams }: SearchParamsProps) {
   // const { mode } = useTheme();
   const { userId } = auth();
   if (!userId) return null;
   const questions: any = await getSavedQuestion({
+    searchQuery: searchParams.q,
     clerkId: userId,
+    filter: searchParams.filter,
   });
   console.log(questions);
   return (

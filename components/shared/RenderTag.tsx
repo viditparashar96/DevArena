@@ -12,7 +12,7 @@ const RenderTag = ({ tag }: Props) => {
         {tag.name}
       </Badge>
       <p className="small-medium text-dark500_light700">
-        {tag?.totalQuestions}
+        {tag?.numberofQuestions ? tag.numberofQuestions : 0}
       </p>
     </Link>
   );

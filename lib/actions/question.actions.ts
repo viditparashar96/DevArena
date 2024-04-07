@@ -12,9 +12,36 @@ import { CreateQuestionParams, GetQuestionsParams } from "./sharded.types";
 export async function getQuestions(params: GetQuestionsParams) {
   try {
     connectToDatabase();
-    const questions = await Question.find({})
+
+    const { searchQuery, filter } = params;
+    const query: FilterQuery<typeof Question> = {};
+    if (searchQuery) {
+      query.$or = [
+        { title: { $regex: new RegExp(searchQuery, "i") } },
+        { explanation: { $regex: new RegExp(searchQuery, "i") } },
+      ];
+    }
+
+    let sortOptions = {};
+    console.log(filter);
+    switch (filter) {
+      case "newest":
+        sortOptions = { createdAt: -1 };
+        break;
+      case "frequent":
+        sortOptions = { views: -1 };
+        break;
+      case "unanswered":
+        query.answers = { $size: 0 };
+        break;
+
+      default:
+        break;
+    }
+    const questions = await Question.find(query)
       .populate({ path: "tags", model: Tag })
       .populate({ path: "author", model: User })
+      .sort(sortOptions)
       .exec();
     if (!questions) throw new Error("No questions found");
     return questions;
@@ -171,12 +198,33 @@ export async function getSavedQuestion(params: any) {
     const query: FilterQuery<typeof Question> = searchQuery
       ? { title: { $regex: new RegExp(searchQuery, "i") } }
       : {};
+
+    let sortOptions = {};
+    switch (filter) {
+      case "most_recent":
+        sortOptions = { createdAt: -1 };
+        break;
+      case "most_viewed":
+        sortOptions = { views: -1 };
+        break;
+      case "most_voted":
+        sortOptions = { upvotes: 1 };
+        break;
+      case "oldest":
+        sortOptions = { createdAt: 1 };
+        break;
+      case "most_answered":
+        sortOptions = { answers: 1 };
+        break;
+      default:
+        break;
+    }
     const user = await User.findOne({ clerkId })
       .populate({
         path: "saved",
         match: query,
         options: {
-          sort: { createdAt: -1 },
+          sort: sortOptions,
         },
         populate: [
           { path: "tags", model: Tag, select: "_id name" },
@@ -247,5 +295,21 @@ export async function editQuestion(params: {
     revalidatePath(path);
   } catch (error) {
     console.log(error);
+  }
+}
+
+export async function getHotQuestions() {
+  try {
+    connectToDatabase();
+    const hotquestion = await Question.find({})
+      .sort({ upvotes: -1, views: -1 })
+      .limit(5)
+      .exec();
+
+    if (!hotquestion) throw new Error("No questions found");
+    return hotquestion;
+  } catch (error) {
+    console.log(error);
+    throw new Error("An error occurred while fetching questions");
   }
 }

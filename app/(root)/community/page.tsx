@@ -3,11 +3,15 @@ import Filter from "@/components/shared/Filter";
 import LocalSearchBar from "@/components/shared/search/LocalSearchBar";
 import { UserFilters } from "@/constants/filters";
 import { getAllUsers } from "@/lib/actions/user.action";
+import { SearchParamsProps } from "@/types";
 import Link from "next/link";
 
-const Page = async () => {
+const Page = async ({ searchParams }: SearchParamsProps) => {
   // @ts-ignore
-  const users: any = await getAllUsers();
+  const users: any = await getAllUsers({
+    searchQuery: searchParams.q,
+    filter: searchParams.filter,
+  });
   //   console.log(users);
   return (
     <>

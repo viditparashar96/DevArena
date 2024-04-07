@@ -2,10 +2,14 @@ import Filter from "@/components/shared/Filter";
 import LocalSearchBar from "@/components/shared/search/LocalSearchBar";
 import { TagFilters } from "@/constants/filters";
 import { getAllTags } from "@/lib/actions/tag.actions";
+import { SearchParamsProps } from "@/types";
 import Link from "next/link";
 
-const Page = async () => {
-  const tags: any = await getAllTags();
+const Page = async ({ searchParams }: SearchParamsProps) => {
+  const tags: any = await getAllTags({
+    searchQuery: searchParams.q,
+    filter: searchParams.filter,
+  });
   console.log(tags);
   return (
     <>

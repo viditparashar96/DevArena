@@ -3,6 +3,7 @@
 import Answer from "@/database/answer.model";
 import Question from "@/database/question.model";
 import User from "@/database/user.model";
+import { FilterQuery } from "mongoose";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoose";
 
@@ -77,8 +78,32 @@ export async function deleteUser(params: any) {
 export async function getAllUsers(params: any) {
   try {
     connectToDatabase();
+    const { searchQuery, filter } = params;
+    const query: FilterQuery<typeof User> = {};
+    if (searchQuery) {
+      query.$or = [
+        { name: { $regex: new RegExp(searchQuery, "i") } },
+        { clerkId: { $regex: new RegExp(searchQuery, "i") } },
+      ];
+    }
+
+    let sortOptions = {};
+    console.log(filter);
+    switch (filter) {
+      case "new_users":
+        sortOptions = { joined: -1 };
+        break;
+      case "old_users":
+        sortOptions = { joined: 1 };
+        break;
+      case "top_contributors":
+        sortOptions = { reputation: -1 };
+        break;
+      default:
+        break;
+    }
     // const { page = 1, pageSize = 10, filter, searchQuery } = params;
-    const users = await User.find({}).sort({ createdAt: -1 });
+    const users = await User.find(query).sort(sortOptions);
 
     return users;
   } catch (error) {

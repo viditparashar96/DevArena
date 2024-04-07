@@ -1,21 +1,20 @@
+import { getHotQuestions } from "@/lib/actions/question.actions";
+import { getPopularTags } from "@/lib/actions/tag.actions";
 import Link from "next/link";
 import { IoIosArrowForward } from "react-icons/io";
 import RenderTag from "../RenderTag";
 
-const RightSidebar = () => {
-  const hostQuestions = [
-    { _id: 1, title: "How to create a new project in Figma?" },
-    { _id: 2, title: "How to create a new project in Figma?" },
-    { _id: 3, title: "How to create a new project in Figma?" },
-    { _id: 4, title: "How to create a new project in Figma?" },
-  ];
+const RightSidebar = async () => {
+  const hostQuestions = await getHotQuestions();
+  // const hostQuestions = [
+  //   { _id: 1, title: "How to create a new project in Figma?" },
+  //   { _id: 2, title: "How to create a new project in Figma?" },
+  //   { _id: 3, title: "How to create a new project in Figma?" },
+  //   { _id: 4, title: "How to create a new project in Figma?" },
+  // ];
 
-  const popularTags = [
-    { _id: 1, name: "React", totalQuestions: 11 },
-    { _id: 2, name: "Nextjs", totalQuestions: 4 },
-    { _id: 3, name: "Nodejs", totalQuestions: 50 },
-    { _id: 4, name: "CSS", totalQuestions: 10 },
-  ];
+  const popularTags = await getPopularTags();
+
   return (
     <section className=" background-light900_dark200 custom-scrollbar light-border sticky right-0 top-0 flex h-screen w-[350px]  flex-col overflow-y-auto border-r p-6 pt-36 shadow-light-300 dark:shadow-none max-xl:hidden">
       <div>
