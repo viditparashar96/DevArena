@@ -26,7 +26,7 @@ export async function getQuestions(params: GetQuestionsParams) {
     console.log(filter);
     switch (filter) {
       case "newest":
-        sortOptions = { createdAt: -1 };
+        sortOptions = { createdAt: 1 };
         break;
       case "frequent":
         sortOptions = { views: -1 };

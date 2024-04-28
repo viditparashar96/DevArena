@@ -34,7 +34,7 @@ const Voting = ({
   const pathname = usePathname();
   const handleSave = async () => {
     if (!userId) {
-      console.log("no user");
+      alert("Please login to save");
       return;
     }
     console.log("save");
@@ -47,6 +47,7 @@ const Voting = ({
   };
   const handlevote = async (action: string) => {
     if (!userId) {
+      alert("Please login to vote");
       return;
     }
     if (action === "upvote") {
